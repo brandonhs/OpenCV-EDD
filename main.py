@@ -1,5 +1,15 @@
 from cv2 import cv2
-video_capture = cv2.VideoCapture(0)
+
+import argparse
+
+ap = argparse.ArgumentParser()
+ap.add_argument('--video', help='Video file source')
+args = ap.parse_args()
+
+if args.video is None:
+    video_capture = cv2.VideoCapture(0)
+else:
+    video_capture = cv2.VideoCapture(args.video)
 
 cv2.namedWindow("Window")
 cv2.namedWindow("Frame Delta")
@@ -11,6 +21,9 @@ out = cv2.VideoWriter('outpy.avi',cv2.VideoWriter_fourcc('M','J','P','G'), 30, (
 
 while True:
     ret, frame = video_capture.read()
+
+    if frame is None: # video is done
+        break
 
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) # convert frame to grayscale
     gray = cv2.GaussianBlur(gray, (21, 21), 0) # blur the grayscale image
